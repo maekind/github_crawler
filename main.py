@@ -95,7 +95,6 @@ def main():
 
         # Print results
         pretty_results = json.dumps(bot.results, indent=4)
-        print(bot.results)
         print(pretty_results)
 
         # Save results in to the ouput file if given as parameter
