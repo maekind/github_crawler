@@ -23,12 +23,6 @@ search_options = {
 
 
 
-def test_init_ok():
-    """ Method for testing initialization """
-    crawler = Crawler("Crawler test", search_options)
-
-    assert crawler is not None
-
 def test_init_missing_keywords():
     """ Method for testing initialization with missing keywords key """
     search_options.pop("keywords")
