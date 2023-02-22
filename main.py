@@ -38,12 +38,14 @@ def get_arguments(): # pragma: no cover
                         help="Json input file with search options",
                         dest='input_file',
                         metavar='STRING',
+                        type=argparse.FileType('r'),
                         required=True)
     parser.add_argument('-o',
                         '--ouput',
                         help="File name to store the results",
                         dest='output_file',
                         metavar='STRING',
+                        type=argparse.FileType('w+'),
                         required=False)
     parser.add_argument('-c',
                         '--console-logging',
@@ -85,9 +87,9 @@ def main():
 
     try:
         # Get search options from file
-        with open(args.input_file, "r") as json_file:
-            logger.debug("Load json input")
-            search_options = json.load(json_file)
+        # with open(args.input_file, "r") as json_file:
+        logger.debug("Load json input")
+        search_options = json.load(args.input_file)
 
         # Run bot
         bot = Crawler(name=__application_name__, search=search_options)
@@ -99,8 +101,8 @@ def main():
 
         # Save results in to the ouput file if given as parameter
         if args.output_file:
-            with open(args.output_file, "w+") as output_file:
-                output_file.write(pretty_results)
+            # with open(args.output_file, "w+") as output_file:
+            args.output_file.write(pretty_results)
 
     # Global catching exceptions because we catch and raise specific exceptions
     # in each class.
