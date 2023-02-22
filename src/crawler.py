@@ -5,7 +5,7 @@
     repositories, wikis or issues """
 
 import logging
-from random import randrange
+import random
 from urllib.parse import urljoin
 import re
 import requests
@@ -80,21 +80,31 @@ class Crawler:
 
     def _download_search_results(self):
         """ Returns the content of the url """
-        self._logger.info("Get random proxy from given list")
-        proxy = self._get_random_proxy()
-        self._logger.debug(f'Selected proxy: {proxy}')
-
-        self._logger.info("Get results")
-
         try:
-            return requests.get(
+            self._logger.info("Get random proxy from given list")
+            proxy = self._get_random_proxy()
+            self._logger.debug(f'Selected proxy: {proxy}')
+
+            self._logger.info("Get results")
+
+            response = requests.get(
                 self.GITHUB_URL.format(
                     search="+".join(self._keywords), type=self._type),
                 timeout=self._timeout,
-                proxies={"proxies": proxy}).text
+                proxies={"http": proxy})
 
+            response.raise_for_status()
+
+            return response.text
+
+        except requests.exceptions.HTTPError as error:
+            self._logger.error(f'{error}-Status code {response.status_code}')
+            raise error
         except requests.exceptions.Timeout:
             self._logger.error("Url request timeout!")
+        except ValueError as error:
+            self._logger.error(error)
+            raise error
 
     def _get_data(self, html):
         """ Check for other linked urls and yields one by one """
@@ -140,21 +150,23 @@ class Crawler:
 
     def _get_details_from_link(self, link):
         """ Method to get extra data from a repo link """
-        self._logger.info("Get random proxy from given list")
-        proxy = self._get_random_proxy()
-        self._logger.debug(f'Selected proxy: {proxy}')
-
         self._logger.info("Get extra data")
 
         try:
+            self._logger.info("Get random proxy from given list")
+            proxy = self._get_random_proxy()
+            self._logger.debug(f'Selected proxy: {proxy}')
+
             # Send request to get html from repo link
-            html = requests.get(
+            response = requests.get(
                 link,
                 timeout=self._timeout,
-                proxies={"proxies": proxy}).text
+                proxies={"http": proxy})
+
+            response.raise_for_status()
 
             self._logger.info("Retrieve data from raw html")
-            soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(response.text, 'html.parser')
 
             # Get extra languages
             languages = self._extract_most_used_languages(soup)
@@ -164,6 +176,12 @@ class Crawler:
 
             return owner, languages
 
+        except requests.exceptions.HTTPError as error:
+            self._logger.error(f'{error}-Status code {response.status_code}')
+            raise error
+        except ValueError as error:
+            self._logger.error(error)
+            raise error
         except requests.exceptions.Timeout:
             self._logger.error("Url request timeout!")
 
@@ -180,7 +198,8 @@ class Crawler:
             # Get percentage of use
             for span in languages_list.find_all("span"):
                 if '%' in span.text:
-                    languages.update({language: float(span.text.replace("%", ""))})
+                    languages.update(
+                        {language: float(span.text.replace("%", ""))})
 
         return languages
 
@@ -196,8 +215,13 @@ class Crawler:
             If the proxy list is empty or it does not match with
             the regular expression (ip:port), it raises a ValueException."""
 
-        if len(self._proxies):
-            return self._proxies[randrange(0, len(self._proxies))]
+        if self._proxies:
+            proxy = random.choice(self._proxies)
+
+            if self._is_proxy(proxy):
+                return proxy
+
+            raise ValueError("Proxies list has non-well formed addresses!")
 
         raise ValueError("Empty proxy list provided!")
 
