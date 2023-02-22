@@ -1,4 +1,10 @@
-
+<!-- Shields -->
+[![codecov](https://codecov.io/gh/maekind/github_crawler/branch/main/graph/badge.svg?token=L8IS93O0XV)](https://codecov.io/gh/maekind/github_crawler)<!-- [![codecov](https://img.shields.io/codecov/c/github/maekind/python_samples?label=codecov&logo=codecov)](https://codecov.io/gh/maekind/python_samples) -->
+[![build](https://img.shields.io/github/actions/workflow/status/maekind/github_crawler/pythonpackage.yaml)](https://github.com/maekind/github_crawler) <!-- TODO: This should point to the pypi package -->
+[![licence](https://img.shields.io/badge/License-MIT-orange.svg)](https://github.com/maekind/github_crawler/blob/main/LICENSE)
+[![size](https://img.shields.io/github/repo-size/maekind/github_crawler)](https://github.com/maekind/github_crawler)
+[![last_commit](https://img.shields.io/github/last-commit/maekind/github_crawler?color=violet)](https://github.com/maekind/github_crawler)
+[![language](https://img.shields.io/github/languages/top/maekind/github_crawler?color=yellowgreen)](https://github.com/maekind/github_crawler)
 
 # Github search crawler 
 
@@ -46,5 +52,8 @@ This command launches the crawler in debug mode and gathers information about re
 
 ## Contributors
 
-<p><a href="https://github.com/maekind">Marco Espinosa</a> @ 2023</p>
+<a href="https://github.com/maekind/github_crawler/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=maekind/github_crawler" />
+</a>
+
 <a href="mailto:marco@marcoespinosa.es">Say hello!</a>
