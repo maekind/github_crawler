@@ -74,6 +74,11 @@ class Crawler:
         """ Property results """
         return self._results
 
+    @property
+    def results_sorted_by_url(self):
+        """ Property results """
+        return sorted(self._results, key=lambda d: d['url'])
+
     def __str__(self):
         """ String class representation """
         return self._name

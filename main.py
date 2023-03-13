@@ -96,7 +96,7 @@ def main():
         bot.run()
 
         # Print results
-        pretty_results = json.dumps(bot.results, indent=4)
+        pretty_results = json.dumps(bot.results_sorted_by_url, indent=4)
         print(pretty_results)
 
         # Save results in to the ouput file if given as parameter
